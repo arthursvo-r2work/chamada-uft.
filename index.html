@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chamada UFT</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chamada UFT">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#004A80">
+<style>
+:root{--azul:#004A80;--verde:#008577;--verde-claro:#E3F1EE;--amarelo:#FDB913;--amarelo-claro:#FFF6DD;--cinza:#666666;--linha:rgba(102,102,102,.35);--fundo:#F4F7FA;--card:#fff;--texto:#262626}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fundo);color:var(--texto);font:16px/1.3 Arial,Calibri,sans-serif;padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+header{background:var(--azul);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 16px 12px}
+header b{display:block;font-size:17px}
+header span{font-size:13px;opacity:.9}
+.topo{position:sticky;top:0;z-index:5;background:var(--fundo);padding:10px 12px 8px;border-bottom:1px solid var(--linha)}
+.abas{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.abas button{min-height:46px;border:1px solid var(--azul);background:var(--card);color:var(--azul);border-radius:8px;font:bold 14px Arial,sans-serif}
+.abas button.ativa{background:var(--azul);color:#fff}
+.linha{display:flex;gap:8px;margin-top:8px}
+input{min-height:44px;border:1px solid var(--linha);border-radius:8px;padding:0 10px;font:16px Arial,sans-serif;background:var(--card);color:var(--texto);min-width:0}
+#data{flex:0 0 150px}#busca{flex:1}
+.placar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.placar div{background:var(--card);border:1px solid var(--linha);border-radius:8px;text-align:center;padding:5px 2px;font-size:12px;color:var(--cinza)}
+.placar b{display:block;font-size:21px;color:var(--texto)}
+#info{font-size:12px;color:var(--cinza);padding:8px 14px 0}
+main{padding:6px 12px;max-width:760px;margin:auto}
+.aluno{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:7px 8px;margin-bottom:6px}
+.aluno.P{background:var(--verde-claro);border-color:var(--verde)}
+.aluno.F{background:var(--amarelo-claro);border-color:var(--amarelo)}
+.num{width:24px;text-align:right;color:var(--cinza);font-size:13px;flex:none}
+.nome{flex:1;min-width:0;font-size:15px}
+.nome small{display:block;color:var(--cinza);font-size:11px}
+.bt{width:50px;height:46px;flex:none;border:1.5px solid var(--linha);background:#fff;border-radius:8px;font:bold 17px Arial,sans-serif;color:var(--cinza)}
+.bt.P.on{background:var(--verde);border-color:var(--verde);color:#fff}
+.bt.F.on{background:var(--amarelo);border-color:var(--amarelo);color:#262626}
+footer{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--linha);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:6px}
+footer button{min-height:44px;border:1px solid var(--azul);background:#fff;color:var(--azul);border-radius:8px;font:bold 13px Arial,sans-serif}
+footer button.forte{background:var(--azul);color:#fff}
+#aviso{position:fixed;left:50%;bottom:170px;transform:translateX(-50%);background:#0B1D2B;color:#fff;padding:9px 14px;border-radius:8px;font-size:14px;display:none;z-index:9;max-width:90%}
+noscript div{background:#FFF6DD;padding:14px}
+#painel{position:fixed;inset:0;z-index:20;background:var(--fundo);display:none;flex-direction:column;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));gap:8px}
+#painel.aberto{display:flex}
+#painel b{color:var(--azul);font-size:17px}
+#texto-lista{flex:1;width:100%;border:1px solid var(--linha);border-radius:8px;padding:10px;font:15px/1.4 Arial,sans-serif;color:var(--texto);background:#fff;resize:none}
+.acoes{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.acoes button{min-height:48px;border:1px solid var(--azul);background:#fff;color:var(--azul);border-radius:8px;font:bold 14px Arial,sans-serif}
+.acoes button.forte{background:var(--azul);color:#fff}
+.acoes .largo{grid-column:1/-1}
+#painel-salvas{position:fixed;inset:0;z-index:20;background:var(--fundo);display:none;flex-direction:column;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));gap:8px;overflow:auto}
+#painel-salvas.aberto{display:flex}
+#painel-salvas b{color:var(--azul);font-size:17px}
+#lista-salvas{display:flex;flex-direction:column;gap:6px;flex:none;font-size:14px;color:var(--cinza)}
+.salva{min-height:46px;text-align:left;padding:8px 10px;border:1px solid var(--azul);background:#fff;color:var(--azul);border-radius:8px;font:bold 14px Arial,sans-serif}
+#faltas-acum{flex:1 0 auto;white-space:pre-wrap;background:#fff;border:1px solid var(--linha);border-radius:8px;padding:10px;font-size:14px}
+#conf{position:fixed;inset:0;z-index:30;background:rgba(11,29,43,.55);display:none;align-items:center;justify-content:center;padding:16px}
+#conf.aberto{display:flex}
+#conf>div{background:#fff;border-radius:8px;padding:16px;max-width:420px;width:100%}
+#conf p{margin:0 0 14px}
+#lembrete{display:none;align-items:center;gap:8px;margin:8px 12px 0;padding:8px 10px;background:var(--amarelo-claro);border:1px solid var(--amarelo);border-radius:8px;font-size:14px}
+#lembrete span{flex:1}
+#lembrete button{min-height:40px;padding:0 14px;border:0;border-radius:8px;background:var(--azul);color:#fff;font:bold 14px Arial,sans-serif}
+#estado{font-size:12px;color:var(--cinza);padding:2px 14px 0;min-height:16px}
+#estado.alerta{color:#262626;font-weight:bold}
+#cofre{position:fixed;inset:0;z-index:40;background:var(--azul);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:24px}
+#cofre b{font-size:24px}#cofre p{margin:0}#cofre input{width:100%}
+#cofre button{min-height:50px;border:0;border-radius:8px;background:#fff;color:var(--azul);font:bold 16px Arial,sans-serif}
+</style>
+</head>
+<body>
+<section id="cofre"><b>Chamada UFT</b><p>Digite a senha para liberar as listas neste aparelho.</p><input id="senha" type="password" autocomplete="off" aria-label="Senha"><button id="b-senha">Entrar</button><p id="cofre-erro"></p></section>
+<noscript><div>Este visualizador bloqueou a execução da chamada. Abra no Safari.</div></noscript>
+<header><b>Universidade Federal do Tocantins</b><span>Curso de Medicina · Câmpus de Palmas · Chamada 2026/2</span></header>
+<section class="topo">
+  <div class="abas"><button id="aba-ii">Anatomia Patológica II<br>6º período</button><button id="aba-i">Anatomia Patológica I<br>5º período</button></div>
+  <div class="linha"><input type="date" id="data" aria-label="Data da aula"><input type="search" id="busca" placeholder="Buscar nome ou matrícula" aria-label="Buscar aluno"></div>
+  <div class="placar"><div><b id="n-p">0</b>Presentes</div><div><b id="n-f">0</b>Faltas</div><div><b id="n-s">0</b>Sem marcar</div></div>
+</section>
+<div id="lembrete"><span></span><button id="b-lembrete">Abrir</button></div>
+<div id="info"></div><div id="estado"></div>
+<main>
+    <div id="lista"></div>
+</main>
+<footer>
+  <button class="forte" id="b-rest">Restantes = falta</button>
+  <button class="forte" id="b-compilar">Compilar lista</button>
+  <button class="forte" id="b-pdf">Baixar PDF</button>
+  <button id="b-salvas">Chamadas salvas</button>
+  <button id="b-todos">Restantes = presente</button>
+  <button id="b-csv">Baixar CSV</button>
+</footer>
+<div id="aviso"></div>
+<section id="painel" aria-label="Lista compilada"><b>Lista compilada</b><textarea id="texto-lista" readonly></textarea><div class="acoes"><button class="forte" id="b-copiar">Copiar</button><button class="forte" id="b-pdf2">Baixar PDF</button><button id="b-fechar" class="largo">Voltar à chamada</button></div></section>
+<section id="painel-salvas" aria-label="Chamadas salvas"><b>Chamadas salvas</b><div id="lista-salvas"></div><b>Faltas acumuladas</b><div id="faltas-acum"></div><div class="acoes"><button id="b-freq">Baixar frequência (CSV)</button><button id="b-backup">Baixar backup</button><button id="b-restaurar">Restaurar backup</button><button id="b-limpar">Limpar chamada aberta</button><button id="b-fechar-salvas" class="forte largo">Voltar à chamada</button></div><input type="file" id="arq-backup" accept=".json,application/json" hidden></section>
+<div id="conf" role="dialog" aria-modal="true"><div><p id="conf-texto"></p><div class="acoes"><button id="conf-nao">Cancelar</button><button id="conf-sim" class="forte">Confirmar</button></div></div></div>
+<script>
+var TURMAS=null,COFRE={"s": "t2jwQFpqa+zqJ+zSN6OZWA==", "iv": "c6mTz94363h9ukNl", "c": "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", "it": 600000};
+var turma='ii',marcas={},memoria={},avisoT,pendentes={},confirmar=null;
+var $=function(id){return document.getElementById(id)};
+var ROTULO={ii:'AP II',i:'AP I'};
+function hoje(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function br(s){var p=s.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:''}
+function dataBR(){return br($('data').value)}
+function chaveDe(t,d){return 'chamadaUFT:'+t+':'+d}
+function chave(){return chaveDe(turma,$('data').value)}
+function lerLS(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function gravarLS(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function lerMarcas(k){var v=lerLS(k);try{return v?JSON.parse(v):(memoria[k]||{})}catch(e){return memoria[k]||{}}}
+function carimbo(k){return parseInt(lerLS('chamadaUFTt:'+k)||'0',10)||0}
+function carregar(){marcas=lerMarcas(chave())}
+function salvar(){
+  var k=chave(),t=Date.now();memoria[k]=marcas;
+  var ok=gravarLS(k,JSON.stringify(marcas));gravarLS('chamadaUFTt:'+k,String(t));
+  estado(ok?'Salvo neste aparelho':'Atenção: este visualizador não está guardando as marcações. Compile antes de fechar.',!ok);
+  pendentes[k]=1;clearTimeout(salvar.t);salvar.t=setTimeout(enviar,800);
+}
+function estado(t,alerta){var e=$('estado');e.textContent=t;e.className=alerta?'alerta':''}
+function salvas(){
+  var r=[],vistos={},i,k,m;
+  function add(k){
+    m=/^chamadaUFT:(ii|i):(\d{4}-\d{2}-\d{2})$/.exec(k);if(!m||vistos[k])return;vistos[k]=1;
+    var x=lerMarcas(k),p=0,f=0;Object.keys(x).forEach(function(a){if(x[a]==='P')p++;else if(x[a]==='F')f++});
+    if(p+f)r.push({k:k,t:m[1],d:m[2],p:p,f:f,marcas:x});
+  }
+  try{for(i=0;i<localStorage.length;i++)add(localStorage.key(i))}catch(e){}
+  Object.keys(memoria).forEach(add);
+  return r.sort(function(a,b){return b.d.localeCompare(a.d)||a.t.localeCompare(b.t)});
+}
+function enviar(){}
+async function salvarArquivo(nome,dados,tipo){
+  try{
+    var fl=new File([dados],nome,{type:tipo});
+    if(navigator.canShare&&navigator.canShare({files:[fl]})){await navigator.share({files:[fl],title:nome});return}
+  }catch(e){if(e&&e.name==='AbortError')return}
+  var u=URL.createObjectURL(new Blob([dados],{type:tipo})),a=document.createElement('a');
+  a.href=u;a.download=nome;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(u)},2000);
+}
+function pdfTxt(s){
+  return String(s).replace(/[^\x20-\x7e -ÿ]/g,'?').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+}
+function pdf(){
+  var T=TURMAS[turma],l=alunos(),p=0,f=0,s=0,W=595,H=842,M=42,PL=38,pags=[];
+  l.forEach(function(a){var v=marcas[a.m];if(v==='P')p++;else if(v==='F')f++;else s++});
+  function txt(x,y,t,b,z,c){return 'BT '+(c||'0.149 0.149 0.149')+' rg /F'+(b?2:1)+' '+z+' Tf '+x+' '+y+' Td ('+pdfTxt(t)+') Tj ET\n'}
+  function ret(x,y,w,h,c){return c+' rg '+x+' '+y+' '+w+' '+h+' re f\n'}
+  var AZ='0 0.29 0.502',i=0,n=Math.max(1,Math.ceil((l.length-34)/PL)+1);
+  if(l.length<=34)n=1;
+  for(var g=0;g<n;g++){
+    var o='',y=H-M;
+    if(g===0){
+      o+=ret(0,H-74,W,74,AZ);
+      o+=txt(M,H-34,'Universidade Federal do Tocantins',true,15,'1 1 1');
+      o+=txt(M,H-54,'Curso de Medicina · Câmpus de Palmas',false,10.5,'1 1 1');
+      y=H-98;o+=txt(M,y,'Lista de presença · '+T.nome+' ('+T.periodo+')',true,12.5,AZ);
+      y-=15;o+=txt(M,y,T.diario,false,9);
+      y-=14;o+=txt(M,y,'Data da aula: '+dataBR()+'     Presentes: '+p+'     Faltas: '+f+(s?'     Sem marcar: '+s:'')+'     Total: '+l.length,true,10);
+      y-=12;
+    }
+    y-=16;o+=ret(M,y-4,W-2*M,17,AZ);
+    o+=txt(M+6,y+1,'Nº',true,9,'1 1 1')+txt(M+32,y+1,'Matrícula',true,9,'1 1 1')+txt(M+104,y+1,'Nome',true,9,'1 1 1')+txt(W-M-62,y+1,'Situação',true,9,'1 1 1');
+    var lim=g===0?34:PL,c=0;
+    while(i<l.length&&c<lim){
+      var a=l[i],v=marcas[a.m],sit=v==='P'?'Presente':v==='F'?'Falta':'Sem marcar';
+      y-=18;
+      if(v==='F')o+=ret(M,y-5,W-2*M,18,'1 0.965 0.867');else if(c%2)o+=ret(M,y-5,W-2*M,18,'0.957 0.969 0.98');
+      o+=txt(M+6,y,a.n,false,9.5)+txt(M+32,y,a.m,false,9.5)+txt(M+104,y,a.nome,v==='F',9.5)+txt(W-M-62,y,sit,v==='F',9.5);
+      i++;c++;
+    }
+    o+=txt(M,30,'Prof. Dr. Arthur Alves Borges de Carvalho · UFT · Curso de Medicina',false,8,'0.4 0.4 0.4');
+    o+=txt(W-M-60,30,'Página '+(g+1)+' de '+n,false,8,'0.4 0.4 0.4');
+    pags.push(o);
+  }
+  var obj=[],kids=[];
+  obj[1]='<</Type/Catalog/Pages 2 0 R>>';
+  obj[3]='<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>';
+  obj[4]='<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>';
+  obj[5]='<</Title(Lista de presenca UFT)>>';
+  pags.forEach(function(c,i){
+    var a=6+i*2,b=a+1;kids.push(a+' 0 R');
+    obj[a]='<</Type/Page/Parent 2 0 R/MediaBox[0 0 '+W+' '+H+']/Contents '+b+' 0 R/Resources<</Font<</F1 3 0 R/F2 4 0 R>>>>>>';
+    obj[b]='<</Length '+c.length+'>>\nstream\n'+c+'endstream';
+  });
+  obj[2]='<</Type/Pages/Count '+pags.length+'/Kids['+kids.join(' ')+']>>';
+  var out='%PDF-1.4\n',xr=[];
+  for(var j=1;j<obj.length;j++){xr[j]=out.length;out+=j+' 0 obj\n'+obj[j]+'\nendobj\n'}
+  var ini=out.length;
+  out+='xref\n0 '+obj.length+'\n0000000000 65535 f \n';
+  for(j=1;j<obj.length;j++)out+=String(xr[j]).padStart(10,'0')+' 00000 n \n';
+  out+='trailer\n<</Size '+obj.length+'/Root 1 0 R/Info 5 0 R>>\nstartxref\n'+ini+'\n%%EOF\n';
+  var b=new Uint8Array(out.length);for(j=0;j<out.length;j++)b[j]=out.charCodeAt(j)&255;
+  return b;
+}
+function nomeArq(ext){return $('data').value+'_UFT_Chamada_'+TURMAS[turma].arq+'.'+ext}
+function alunos(){return TURMAS[turma].alunos.map(function(s,i){var p=s.split('|');return{n:i+1,m:p[0],nome:p[1]}})}
+function semAcento(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+function placar(){
+  var p=0,f=0,l=alunos();
+  l.forEach(function(a){if(marcas[a.m]==='P')p++;else if(marcas[a.m]==='F')f++});
+  $('n-p').textContent=p;$('n-f').textContent=f;$('n-s').textContent=l.length-p-f;
+}
+function pintar(el,m){
+  var v=marcas[m]||'';
+  el.className='aluno '+v;
+  el.querySelector('.bt.P').classList.toggle('on',v==='P');
+  el.querySelector('.bt.F').classList.toggle('on',v==='F');
+}
+function marcar(m,v,el){
+  if(marcas[m]===v)delete marcas[m];else marcas[m]=v;
+  salvar();pintar(el,m);placar();
+}
+function lembrete(){
+  var b=$('lembrete'),h=$('data').value,vazia=!Object.keys(marcas).length,u=salvas().filter(function(c){return c.t===turma&&c.d!==h})[0];
+  if(vazia&&u){
+    b.style.display='flex';b.firstChild.textContent='Última chamada salva: '+br(u.d)+' · '+u.p+' presentes · '+u.f+' faltas';
+    $('b-lembrete').onclick=function(){abrir(u.t,u.d)};
+  }else b.style.display='none';
+}
+function desenhar(){
+  var T=TURMAS[turma],q=semAcento($('busca').value.trim()),box=$('lista');
+  $('aba-ii').classList.toggle('ativa',turma==='ii');
+  $('aba-i').classList.toggle('ativa',turma==='i');
+  $('info').textContent=T.diario+' · '+T.alunos.length+' alunos';
+  box.textContent='';
+  alunos().forEach(function(a){
+    if(q&&semAcento(a.nome).indexOf(q)<0&&a.m.indexOf(q)<0)return;
+    var el=document.createElement('div'),num=document.createElement('span'),nome=document.createElement('div'),sm=document.createElement('small');
+    num.className='num';num.textContent=a.n;
+    nome.className='nome';nome.textContent=a.nome;sm.textContent=a.m;nome.appendChild(sm);
+    el.appendChild(num);el.appendChild(nome);
+    ['P','F'].forEach(function(v){
+      var b=document.createElement('button');b.className='bt '+v;b.textContent=v;
+      b.setAttribute('aria-label',(v==='P'?'Presente: ':'Falta: ')+a.nome);
+      b.onclick=function(){marcar(a.m,v,el)};
+      el.appendChild(b);
+    });
+    box.appendChild(el);pintar(el,a.m);
+  });
+  placar();lembrete();
+}
+function trocar(t){turma=t;$('busca').value='';carregar();desenhar();window.scrollTo(0,0)}
+function abrir(t,d){turma=t;$('data').value=d;$('busca').value='';carregar();desenhar();$('painel-salvas').classList.remove('aberto');window.scrollTo(0,0)}
+function perguntar(t,fn){$('conf-texto').textContent=t;confirmar=fn;$('conf').classList.add('aberto')}
+function restantes(v,txt){
+  var s=parseInt($('n-s').textContent,10);
+  if(!s){avisar('Não há alunos sem marcação.');return}
+  perguntar('Marcar '+s+' aluno(s) sem marcação como '+txt+'?',function(){
+    alunos().forEach(function(a){if(!marcas[a.m])marcas[a.m]=v});
+    salvar();desenhar();
+  });
+}
+function resumo(){
+  var T=TURMAS[turma],l=alunos(),pres=[],falt=[],sem=[];
+  l.forEach(function(a){var v=marcas[a.m],t=a.n+'. '+a.nome;(v==='P'?pres:v==='F'?falt:sem).push(t)});
+  var r='UFT · '+T.nome+' ('+T.periodo+')\nData: '+dataBR()+'\nPresentes: '+pres.length+' | Faltas: '+falt.length+' | Sem marcar: '+sem.length+' | Total: '+l.length;
+  r+='\n\nFALTAS:\n'+(falt.join('\n')||'Nenhuma');
+  if(sem.length)r+='\n\nSEM MARCAR:\n'+sem.join('\n');
+  return r+'\n\nPRESENTES:\n'+(pres.join('\n')||'Nenhum');
+}
+function copiar(){
+  var a=$('texto-lista'),t=a.value;
+  function reserva(){
+    a.focus();a.select();a.setSelectionRange(0,t.length);
+    var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+    avisar(ok?'Lista copiada.':'Texto selecionado: use o comando de copiar do aparelho.');
+  }
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(function(){avisar('Lista copiada.')},reserva);else reserva();
+}
+function csv(){
+  var T=TURMAS[turma],l=['Numero;Matricula;Nome;Situacao;Data;Disciplina'];
+  alunos().forEach(function(a){var v=marcas[a.m];l.push([a.n,a.m,a.nome,v==='P'?'Presente':v==='F'?'Falta':'Sem marcar',dataBR(),T.nome].join(';'))});
+  salvarArquivo(nomeArq('csv'),'﻿'+l.join('\r\n'),'text/csv;charset=utf-8');
+}
+function frequencia(t){
+  var cs=salvas().filter(function(c){return c.t===t}),T=TURMAS[t];
+  return{aulas:cs.length,linhas:T.alunos.map(function(s,i){
+    var p=s.split('|'),f=0;cs.forEach(function(c){if(c.marcas[p[0]]==='F')f++});
+    return{n:i+1,m:p[0],nome:p[1],f:f,datas:cs.filter(function(c){return c.marcas[p[0]]==='F'}).map(function(c){return br(c.d)}).reverse()};
+  })};
+}
+function freqCsv(){
+  var F=frequencia(turma),l=['Numero;Matricula;Nome;Chamadas registradas;Faltas;Datas das faltas'];
+  F.linhas.forEach(function(a){l.push([a.n,a.m,a.nome,F.aulas,a.f,a.datas.join(', ')].join(';'))});
+  salvarArquivo(hoje()+'_UFT_Frequencia_'+TURMAS[turma].arq+'.csv','﻿'+l.join('\r\n'),'text/csv;charset=utf-8');
+}
+function painelSalvas(){
+  var box=$('lista-salvas'),cs=salvas();box.textContent='';
+  if(!cs.length){box.textContent='Nenhuma chamada salva neste aparelho ou nesta conta.'}
+  cs.forEach(function(c){
+    var b=document.createElement('button');b.className='salva';
+    b.textContent=br(c.d)+' · '+ROTULO[c.t]+' · '+c.p+' presentes · '+c.f+' faltas';
+    b.onclick=function(){abrir(c.t,c.d)};box.appendChild(b);
+  });
+  var F=frequencia(turma),fs=F.linhas.filter(function(a){return a.f}).sort(function(a,b){return b.f-a.f||a.n-b.n}),q=$('faltas-acum');
+  q.textContent=TURMAS[turma].nome+': '+F.aulas+' chamada(s) registrada(s).'+(fs.length?'\n\n'+fs.map(function(a){return a.nome+': '+a.f+' falta(s) ('+a.datas.join(', ')+')'}).join('\n'):'\n\nNenhuma falta registrada.');
+  $('painel-salvas').classList.add('aberto');
+}
+function backup(){
+  var d={sistema:'chamadaUFT',gerado:new Date().toISOString(),chamadas:salvas().map(function(c){return{turma:c.t,data:c.d,marcas:c.marcas}})};
+  salvarArquivo(hoje()+'_UFT_Chamada_Backup.json',JSON.stringify(d,null,1),'application/json');
+}
+function restaurar(ev){
+  var f=ev.target.files[0];if(!f)return;
+  f.text().then(function(t){
+    var d=JSON.parse(t),n=0,ign=0;
+    (d.chamadas||[]).forEach(function(c){
+      if(!/^(ii|i)$/.test(c.turma)||!/^\d{4}-\d{2}-\d{2}$/.test(c.data)||typeof c.marcas!=='object')return;
+      var k=chaveDe(c.turma,c.data),at=lerMarcas(k);
+      if(Object.keys(at).length){ign++;return}
+      memoria[k]=c.marcas;gravarLS(k,JSON.stringify(c.marcas));gravarLS('chamadaUFTt:'+k,String(Date.now()));pendentes[k]=1;n++;
+    });
+    enviar();carregar();desenhar();painelSalvas();
+    avisar(n+' chamada(s) restaurada(s); '+ign+' já existente(s) mantida(s).');
+  }).catch(function(){avisar('Arquivo de backup inválido.')});
+  ev.target.value='';
+}
+function avisar(t){var a=$('aviso');a.textContent=t;a.style.display='block';clearTimeout(avisoT);avisoT=setTimeout(function(){a.style.display='none'},2600)}
+$('data').value=hoje();
+$('aba-ii').onclick=function(){trocar('ii')};
+$('aba-i').onclick=function(){trocar('i')};
+$('data').onchange=function(){carregar();desenhar()};
+$('busca').oninput=desenhar;
+$('b-rest').onclick=function(){restantes('F','falta')};
+$('b-todos').onclick=function(){restantes('P','presente')};
+$('b-copiar').onclick=copiar;
+$('b-compilar').onclick=function(){$('texto-lista').value=resumo();$('painel').classList.add('aberto')};
+$('b-fechar').onclick=function(){$('painel').classList.remove('aberto')};
+$('b-pdf').onclick=$('b-pdf2').onclick=function(){salvarArquivo(nomeArq('pdf'),pdf(),'application/pdf')};
+$('b-csv').onclick=csv;
+$('b-salvas').onclick=painelSalvas;
+$('b-fechar-salvas').onclick=function(){$('painel-salvas').classList.remove('aberto')};
+$('b-freq').onclick=freqCsv;
+$('b-backup').onclick=backup;
+$('b-restaurar').onclick=function(){$('arq-backup').click()};
+$('arq-backup').onchange=restaurar;
+$('b-limpar').onclick=function(){perguntar('Apagar todas as marcações de '+TURMAS[turma].nome+' em '+dataBR()+'? Esta ação não pode ser desfeita.',function(){marcas={};salvar();desenhar();$('painel-salvas').classList.remove('aberto')})};
+$('conf-nao').onclick=function(){confirmar=null;$('conf').classList.remove('aberto')};
+$('conf-sim').onclick=function(){var f=confirmar;confirmar=null;$('conf').classList.remove('aberto');if(f)f()};
+function iniciar(){carregar();desenhar();$('cofre').style.display='none'}
+function b64(s){return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)})}
+async function destravar(){
+  var e=$('cofre-erro');e.textContent='Abrindo…';
+  try{
+    var k=await crypto.subtle.importKey('raw',new TextEncoder().encode($('senha').value.trim()),'PBKDF2',false,['deriveKey']);
+    var c=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(COFRE.s),iterations:COFRE.it,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt']);
+    var t=new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(COFRE.iv)},c,b64(COFRE.c)));
+    TURMAS=JSON.parse(t);gravarLS('chamadaUFTlista',t);$('senha').value='';iniciar();
+  }catch(x){e.textContent='Senha incorreta.'}
+}
+$('b-senha').onclick=destravar;
+$('senha').onkeydown=function(ev){if(ev.key==='Enter')destravar()};
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+var guardada=lerLS('chamadaUFTlista');
+if(guardada){try{TURMAS=JSON.parse(guardada);iniciar()}catch(e){}}
+</script>
+</body>
+</html>

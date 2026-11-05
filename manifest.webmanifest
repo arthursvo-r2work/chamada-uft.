@@ -1,0 +1,1 @@
+{"name": "Chamada UFT", "short_name": "Chamada UFT", "start_url": "./index.html", "scope": "./", "display": "standalone", "background_color": "#004A80", "theme_color": "#004A80", "lang": "pt-BR", "icons": [{"src": "icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}]}
